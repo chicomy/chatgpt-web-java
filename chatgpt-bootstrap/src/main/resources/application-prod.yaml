@@ -4,15 +4,44 @@ spring:
     username: ${MYSQL_USER_NAME:root}
     password: ${MYSQL_PASSWORD:123456}
     url: ${JDBC_URL:jdbc:mysql://localhost:3309/chat?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true}
-
-    #mybatis-plus:
-    #  configuration:
-    # 控制台打印 SQL
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
+  jpa:
+    hibernate:
+      ddl-auto: update #根据实体类创建/更新表
+    #show-sql: true #控制台是否输出sql
+  data:
+    redis:
+      # Redis数据库索引（默认为0）
+      database: ${REDIS_DATABASE:1}
+      # Redis服务器地址
+      host: ${REDIS_HOST:127.0.0.1}
+      # Redis服务器连接端口
+      port: ${REDIS_PORT:6379}
+      username: ${REDIS_USERNAME:}
+      password: ${REDIS_PASSWORD:}
+      timeout:  ${REDIS_TIMEOUT:10s}
+      lettuce:
+        pool:
+          # 连接池最大连接数
+          max-active: ${REDIS_MAX_ACTIVE:200}
+          # 连接池最大阻塞等待时间（使用负值表示没有限制）
+          max-wait: ${REDIS_MAX_WAIT:-1ms}
+          # 连接池中的最大空闲连接
+          max-idle: ${REDIS_MAX_IDLE:10}
+          # 连接池中的最小空闲连接
+          min-idle:  ${REDIS_MIN_IDLE:0}
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true  #驼峰命名
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler #配置枚举
+  #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #日志输出
+  mapper-locations: classpath*:mapper/*.xml  #xml路径配置 多个逗号分隔
+  global-config:
+    db-config:
+      id-type: auto  # id自增
+      #table-prefix: t_ #表明前缀 全局配置后可省略@TableName()配置
 chat:
   # 访问密码
-  auth_secret_key: ${CHAT_AUTH_SECRET_KEY:123456}
+  auth_secret_key: ${CHAT_AUTH_SECRET_KEY:}
   # OpenAI API Key - https://platform.openai.com/overview
   openai_api_key: ${CHAT_OPENAI_API_KEY:}
   # change this to an `accessToken` extracted from the ChatGPT site's `https://chat.openai.com/api/auth/session` response
